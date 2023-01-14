@@ -1,73 +1,101 @@
 from os.path import isfile, join
 import os
 import shutil
-
-path = os.path.expanduser("~/OneDrive/Scott and Coco Pty Ltd/Invoices")
-filename = os.path.basename(path).split(".")[0].title()
-
-#basic configuration
-first_month = input('What is the first month?e.g. 04\n')  # first month of the last quarter, e.g. July is 07.
-second_month = input('What is the second month?e.g. 05\n')   # second month of the last quarter
-third_month = input('What is the third month?e.g. 06\n')   # third month of the last quarter
-currentYear = input('What is the year?e.g. 2022\n') # year
-
-
-credit_card_suppliers = ['Algo Expert','iCare','Bunnings','Gazman','NSW Transport', 'Station', 'Godaddy', 'Seafood', 'Seed', 'QBE', 'Rego','Udacity','Typo','Uniqlo', 'Opera House', 'Mecca', 'JB Hifi', 'Eastwood Seafood', 'Chop', 'Baby Harbour', 'Apple', 'Parking', 'Chemist warehouse', 'Officeworks', 'Google Ads', 'Ikea', 'Amazon', 'Meat Emporium', 'butchery','DFI','coles','fuel','feeder','web ninja','kmall09','super','seek business','food packaging','google','coursera','fedder', 'when i work','wws','nike', 'cardless','kennards', 'telstra','petrol', 'lululemon', 'Zip', 'Costco', 'Bob', 'Woolworth', 'Tongli', 'post', 'Bombora', 'Food Dairy', 'Shopify', 'Adobe', 'Ikea', 'FYI']  # paid via credit card
-ba_suppliers = ['KP Lawyers','Food Safety Inspection', 'sinosmart','legal','HW Accounting','daiwa','de toni','pomona', 'Madhouse', 'Tulip', 'MF', 'Fresh', 'YCC', 'Munja']  # paid via business account
-hl_suppliers = ['igeno', 'nova', 'rent']  # paid by home loan
-the_month = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-
-invoices = [f for f in os.listdir(path) if isfile(join(path, f))]  # read invoices path
-
+import pandas as pd
 
 
 def move_file():
+    path = "/Users/scott/OneDrive/Scott and Coco Pty Ltd/Invoices/"
+    supplier_file = 'Supplier-Payment-Method.xlsx'
+
+
+    # basic configuration
+    quarter = input('What is the quarter? e.g. q1, q2, q3, q4\n')
+    match quarter.lower():
+        case 'q1':
+            first_month = '01'
+            second_month = '02'
+            third_month = '03'
+        case 'q2':
+            first_month = '04'
+            second_month = '05'
+            third_month = '06'
+        case 'q3':
+            first_month = '07'
+            second_month = '08'
+            third_month = '09'
+        case 'q4':
+            first_month = '10'
+            second_month = '11'
+            third_month = '12'
+
+    current_year = input('What is the year?e.g. 2023\n')  # year
+    #inital setup for supplier payment methods
+    if not os.path.exists(supplier_file):
+        print('Please create "Supplier-Payment-Method.xlsx" and put inside the folder.')
+    df = pd.read_excel(supplier_file)
+
+    credit_card_suppliers = df.loc[df['Payment Method'] == 'Credit Card Account']['Suppliers'].to_numpy().tolist()
+    ba_suppliers = df.loc[df['Payment Method'] == 'Business Account']['Suppliers'].to_numpy().tolist()
+    hl_suppliers = df.loc[df['Payment Method'] == 'Home Loan Account']['Suppliers'].to_numpy().tolist()
+    all_suppliers = [*credit_card_suppliers, *ba_suppliers, *hl_suppliers]
+    the_month = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+
+    invoices = [f for f in os.listdir(path) if isfile(join(path, f))]  # read invoices path
     #check if folder exists, if not, create the folder
-    folder1 = f"/Users/scott/Library/CloudStorage/OneDrive-Personal/Scott and Coco Pty Ltd/Invoices/{the_month[int(first_month) - 1]} {currentYear}/Westpac Credit Card 0631/"
-    folder2 = f"/Users/scott/Library/CloudStorage/OneDrive-Personal/Scott and Coco Pty Ltd/Invoices/{the_month[int(second_month) - 1]} {currentYear}/Westpac Credit Card 0631/"
-    folder3 = f"/Users/scott/Library/CloudStorage/OneDrive-Personal/Scott and Coco Pty Ltd/Invoices/{the_month[int(third_month) - 1]} {currentYear}/Westpac Credit Card 0631/"
-    folder4 = f"/Users/scott/Library/CloudStorage/OneDrive-Personal/Scott and Coco Pty Ltd/Invoices/{the_month[int(first_month) - 1]} {currentYear}/CBA Business Account 5433/"
-    folder5 = f"/Users/scott/Library/CloudStorage/OneDrive-Personal/Scott and Coco Pty Ltd/Invoices/{the_month[int(second_month) - 1]} {currentYear}/CBA Business Account 5433/"
-    folder6 = f"/Users/scott/Library/CloudStorage/OneDrive-Personal/Scott and Coco Pty Ltd/Invoices/{the_month[int(third_month) - 1]} {currentYear}/CBA Business Account 5433/"
-    folder7 = f"/Users/scott/Library/CloudStorage/OneDrive-Personal/Scott and Coco Pty Ltd/Invoices/{the_month[int(first_month) - 1]} {currentYear}/Westpac Home Loan 800269/"
-    folder8 = f"/Users/scott/Library/CloudStorage/OneDrive-Personal/Scott and Coco Pty Ltd/Invoices/{the_month[int(second_month) - 1]} {currentYear}/Westpac Home Loan 800269/"
-    folder9 = f"/Users/scott/Library/CloudStorage/OneDrive-Personal/Scott and Coco Pty Ltd/Invoices/{the_month[int(third_month) - 1]} {currentYear}/Westpac Home Loan 800269/"
+    folder_path = "/Users/scott/Library/CloudStorage/OneDrive-Personal/Scott and Coco Pty Ltd/Invoices"
+    folder1 = f"{folder_path}/{the_month[int(first_month) - 1]} {current_year}/Westpac Credit Card 0631/"
+    folder2 = f"{folder_path}/{the_month[int(second_month) - 1]} {current_year}/Westpac Credit Card 0631/"
+    folder3 = f"{folder_path}/{the_month[int(third_month) - 1]} {current_year}/Westpac Credit Card 0631/"
+    folder4 = f"{folder_path}/{the_month[int(first_month) - 1]} {current_year}/CBA Business Account 5433/"
+    folder5 = f"{folder_path}/{the_month[int(second_month) - 1]} {current_year}/CBA Business Account 5433/"
+    folder6 = f"{folder_path}/{the_month[int(third_month) - 1]} {current_year}/CBA Business Account 5433/"
+    folder7 = f"{folder_path}/{the_month[int(first_month) - 1]} {current_year}/Westpac Home Loan 800269/"
+    folder8 = f"{folder_path}/{the_month[int(second_month) - 1]} {current_year}/Westpac Home Loan 800269/"
+    folder9 = f"{folder_path}/{the_month[int(third_month) - 1]} {current_year}/Westpac Home Loan 800269/"
     folders = [folder1, folder2, folder3, folder4, folder5, folder6, folder7, folder8, folder9]
     for folder in folders:
         if not os.path.exists(folder):
             os.makedirs(folder) #make folder recursively
-    print('Folder checked & created.')
+            print(f'Created Folder: {folder}')
 
     #move files
+    missing_suppliers = []
     for invoice in invoices:
         for credit_card_supplier in credit_card_suppliers:
-            if invoice.lower().find(credit_card_supplier.lower()) >= 0 and invoice.split()[-1].split('.')[0][2:4] == first_month:
-                shutil.move(path+"/"+invoice, os.path.expanduser(f"/Users/scott/Library/CloudStorage/OneDrive-Personal/Scott and Coco Pty Ltd/Invoices/{the_month[int(first_month)-1]} {currentYear}/Westpac Credit Card 0631/")+invoice)
-            elif invoice.lower().find(credit_card_supplier.lower()) >= 0 and invoice.split()[-1].split('.')[0][2:4] == second_month:
-                shutil.move(path+"/"+invoice, os.path.expanduser(f"/Users/scott/Library/CloudStorage/OneDrive-Personal/Scott and Coco Pty Ltd/Invoices/{the_month[int(second_month)-1]} {currentYear}/Westpac Credit Card 0631/")+invoice)
-            elif invoice.lower().find(credit_card_supplier.lower()) >= 0 and invoice.split()[-1].split('.')[0][2:4] == third_month:
-                shutil.move(path + "/" + invoice, os.path.expanduser(f"/Users/scott/Library/CloudStorage/OneDrive-Personal/Scott and Coco Pty Ltd/Invoices/{the_month[int(third_month)-1]} {currentYear}/Westpac Credit Card 0631/") + invoice)
+            if (invoice.lower().find(credit_card_supplier.lower()) >= 0 and invoice.split()[-1].split('.')[0][2:4]) or (invoice.lower().find(credit_card_supplier.lower()) >= 0 and invoice.split()[-2][2:4]) == first_month:
+                shutil.move(path+"/"+invoice, os.path.expanduser(f"{folder_path}/{the_month[int(first_month)-1]} {current_year}/Westpac Credit Card 0631/")+invoice)
+            elif (invoice.lower().find(credit_card_supplier.lower()) >= 0 and invoice.split()[-1].split('.')[0][2:4]) or (invoice.lower().find(credit_card_supplier.lower()) >= 0 and invoice.split()[-2][2:4]) == second_month:
+                shutil.move(path+"/"+invoice, os.path.expanduser(f"{folder_path}/{the_month[int(second_month)-1]} {current_year}/Westpac Credit Card 0631/")+invoice)
+            elif (invoice.lower().find(credit_card_supplier.lower()) >= 0 and invoice.split()[-1].split('.')[0][2:4]) or (invoice.lower().find(credit_card_supplier.lower()) >= 0 and invoice.split()[-2][2:4]) == third_month:
+                shutil.move(path + "/" + invoice, os.path.expanduser(f"{folder_path}/{the_month[int(third_month)-1]} {current_year}/Westpac Credit Card 0631/") + invoice)
 
     # paid by business bank account
-    for invoice in invoices:
         for ba_supplier in ba_suppliers:
-            if invoice.lower().find(ba_supplier.lower()) >= 0 and invoice.split()[-1].split('.')[0][2:4] == first_month:
-                shutil.move(path+"/"+invoice, os.path.expanduser(f"/Users/scott/Library/CloudStorage/OneDrive-Personal/Scott and Coco Pty Ltd/Invoices/{the_month[int(first_month)-1]} {currentYear}/CBA Business Account 5433/")+invoice)
-            elif invoice.lower().find(ba_supplier.lower()) >= 0 and invoice.split()[-1].split('.')[0][2:4] == second_month:
-                shutil.move(path+"/"+invoice, os.path.expanduser(f"/Users/scott/Library/CloudStorage/OneDrive-Personal/Scott and Coco Pty Ltd/Invoices/{the_month[int(second_month)-1]} {currentYear}/CBA Business Account 5433/")+invoice)
-            elif invoice.lower().find(ba_supplier.lower()) >= 0 and invoice.split()[-1].split('.')[0][2:4] == third_month:
-                shutil.move(path + "/" + invoice, os.path.expanduser(f"/Users/scott/Library/CloudStorage/OneDrive-Personal/Scott and Coco Pty Ltd/Invoices/{the_month[int(third_month)-1]} {currentYear}/CBA Business Account 5433/")+invoice)
+            if (invoice.lower().find(ba_supplier.lower()) >= 0 and invoice.split()[-1].split('.')[0][2:4]) or (invoice.lower().find(ba_supplier.lower()) >= 0 and invoice.split()[-2][2:4]) == first_month:
+                shutil.move(path+"/"+invoice, os.path.expanduser(f"{folder_path}/{the_month[int(first_month)-1]} {current_year}/CBA Business Account 5433/")+invoice)
+            elif (invoice.lower().find(ba_supplier.lower()) >= 0 and invoice.split()[-1].split('.')[0][2:4]) or (invoice.lower().find(ba_supplier.lower()) >= 0 and invoice.split()[-2][2:4]) == second_month:
+                shutil.move(path+"/"+invoice, os.path.expanduser(f"{folder_path}/{the_month[int(second_month)-1]} {current_year}/CBA Business Account 5433/")+invoice)
+            elif (invoice.lower().find(ba_supplier.lower()) >= 0 and invoice.split()[-1].split('.')[0][2:4]) or (invoice.lower().find(ba_supplier.lower()) >= 0 and invoice.split()[-2][2:4]) == third_month:
+                shutil.move(path + "/" + invoice, os.path.expanduser(f"{folder_path}/{the_month[int(third_month)-1]} {current_year}/CBA Business Account 5433/")+invoice)
 
     # paid by home loan account
-    for invoice in invoices:
         for hl_supplier in hl_suppliers:
-            if invoice.lower().find(hl_supplier.lower()) >= 0 and invoice.split()[-1].split('.')[0][2:4] == first_month:
-                shutil.move(path+"/"+invoice, os.path.expanduser(f"/Users/scott/Library/CloudStorage/OneDrive-Personal/Scott and Coco Pty Ltd/Invoices/{the_month[int(first_month)-1]} {currentYear}/Westpac Home Loan 800269/")+invoice)
-            elif invoice.lower().find(hl_supplier.lower()) >= 0 and invoice.split()[-1].split('.')[0][2:4] == second_month:
-                shutil.move(path+"/"+invoice, os.path.expanduser(f"/Users/scott/Library/CloudStorage/OneDrive-Personal/Scott and Coco Pty Ltd/Invoices/{the_month[int(second_month)-1]} {currentYear}/Westpac Home Loan 800269/")+invoice)
-            elif invoice.lower().find(hl_supplier.lower()) >= 0 and invoice.split()[-1].split('.')[0][2:4] == third_month:
-                shutil.move(path + "/" + invoice, os.path.expanduser(f"/Users/scott/Library/CloudStorage/OneDrive-Personal/Scott and Coco Pty Ltd/Invoices/{the_month[int(third_month)-1]} {currentYear}/Westpac Home Loan 800269/")+invoice)
+            if (invoice.lower().find(hl_supplier.lower()) >= 0 and invoice.split()[-1].split('.')[0][2:4]) or (invoice.lower().find(hl_supplier.lower()) >= 0 and invoice.split()[-2][2:4]) == first_month:
+                shutil.move(path+"/"+invoice, os.path.expanduser(f"{folder_path}/{the_month[int(first_month)-1]} {current_year}/Westpac Home Loan 800269/")+invoice)
+            elif (invoice.lower().find(hl_supplier.lower()) >= 0 and invoice.split()[-1].split('.')[0][2:4]) or (invoice.lower().find(hl_supplier.lower()) >= 0 and invoice.split()[-2][2:4]) == second_month:
+                shutil.move(path+"/"+invoice, os.path.expanduser(f"{folder_path}/{the_month[int(second_month)-1]} {current_year}/Westpac Home Loan 800269/")+invoice)
+            elif (invoice.lower().find(hl_supplier.lower()) >= 0 and invoice.split()[-1].split('.')[0][2:4]) or (invoice.lower().find(hl_supplier.lower()) >= 0 and invoice.split()[-2][2:4]) == third_month:
+                shutil.move(path + "/" + invoice, os.path.expanduser(f"{folder_path}/{the_month[int(third_month)-1]} {current_year}/Westpac Home Loan 800269/")+invoice)
+
+    #check if all suppliers have been indicated
+        for supplier in all_suppliers:
+            if invoice.lower().find(supplier.lower()) == -1 and invoice.split()[0] not in missing_suppliers and invoice != '.DS_Store':
+                missing_suppliers.append(invoice.split()[0])
+                print(f'"{invoice.split()[0]}" has not been specified, please modify in {supplier_file}.')
     print('Files moved to the folders.')
 
 
-move_file()
+
+if __name__ == '__main__':
+    move_file()
