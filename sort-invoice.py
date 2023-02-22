@@ -48,7 +48,7 @@ def move_file():
             third_month = '12'
 
     current_year = input('What is the year?e.g. 2023\n')  # year
-    #inital setup for supplier payment methods
+    # initial setup for supplier payment methods
     default_df = pd.DataFrame(data=None, columns=['Suppliers', 'Payment Method'])
 
     if not os.path.exists(supplier_file):
@@ -64,7 +64,7 @@ def move_file():
     the_month = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 
     invoices = [f for f in os.listdir(path) if isfile(join(path, f))]  # read invoices path
-    #check if folder exists, if not, create the folder
+    # check if folder exists, if not, create the folder
 
 
     months = [first_month, second_month, third_month]
@@ -81,29 +81,29 @@ def move_file():
     # move files
     for invoice in invoices:
         for credit_card_supplier in credit_card_suppliers:
-            if (invoice.lower().find(credit_card_supplier.lower()) >= 0 and invoice.split()[-1].split('.')[0][2:4]) or (invoice.lower().find(credit_card_supplier.lower()) >= 0 and invoice.split()[-2][2:4]) == first_month:
+            if ((invoice.lower().find(credit_card_supplier.lower()) >= 0 and invoice.split()[-1].split('.')[0][2:4]) == first_month) or ((invoice.lower().find(credit_card_supplier.lower()) >= 0 and invoice.split()[-2][2:4]) == first_month):
                 shutil.move(path+"/"+invoice, os.path.expanduser(f"{path}{the_month[int(first_month)-1]} {current_year}/{account_folders[0]}/")+invoice)
-            elif (invoice.lower().find(credit_card_supplier.lower()) >= 0 and invoice.split()[-1].split('.')[0][2:4]) or (invoice.lower().find(credit_card_supplier.lower()) >= 0 and invoice.split()[-2][2:4]) == second_month:
+            elif ((invoice.lower().find(credit_card_supplier.lower()) >= 0 and invoice.split()[-1].split('.')[0][2:4]) == second_month) or ((invoice.lower().find(credit_card_supplier.lower()) >= 0 and invoice.split()[-2][2:4]) == second_month):
                 shutil.move(path+"/"+invoice, os.path.expanduser(f"{path}{the_month[int(second_month)-1]} {current_year}/{account_folders[0]}/")+invoice)
-            elif (invoice.lower().find(credit_card_supplier.lower()) >= 0 and invoice.split()[-1].split('.')[0][2:4]) or (invoice.lower().find(credit_card_supplier.lower()) >= 0 and invoice.split()[-2][2:4]) == third_month:
+            elif ((invoice.lower().find(credit_card_supplier.lower()) >= 0 and invoice.split()[-1].split('.')[0][2:4]) == third_month) or ((invoice.lower().find(credit_card_supplier.lower()) >= 0 and invoice.split()[-2][2:4]) == third_month):
                 shutil.move(path + "/" + invoice, os.path.expanduser(f"{path}{the_month[int(third_month)-1]} {current_year}/{account_folders[0]}/") + invoice)
 
     # paid by business bank account
         for ba_supplier in ba_suppliers:
-            if (invoice.lower().find(ba_supplier.lower()) >= 0 and invoice.split()[-1].split('.')[0][2:4]) or (invoice.lower().find(ba_supplier.lower()) >= 0 and invoice.split()[-2][2:4]) == first_month:
+            if ((invoice.lower().find(ba_supplier.lower()) >= 0 and invoice.split()[-1].split('.')[0][2:4]) == first_month) or ((invoice.lower().find(ba_supplier.lower()) >= 0 and invoice.split()[-2][2:4]) == first_month):
                 shutil.move(path+"/"+invoice, os.path.expanduser(f"{path}{the_month[int(first_month)-1]} {current_year}/{account_folders[1]}/")+invoice)
-            elif (invoice.lower().find(ba_supplier.lower()) >= 0 and invoice.split()[-1].split('.')[0][2:4]) or (invoice.lower().find(ba_supplier.lower()) >= 0 and invoice.split()[-2][2:4]) == second_month:
+            elif ((invoice.lower().find(ba_supplier.lower()) >= 0 and invoice.split()[-1].split('.')[0][2:4]) == second_month) or ((invoice.lower().find(ba_supplier.lower()) >= 0 and invoice.split()[-2][2:4]) == second_month):
                 shutil.move(path+"/"+invoice, os.path.expanduser(f"{path}{the_month[int(second_month)-1]} {current_year}/{account_folders[1]}/")+invoice)
-            elif (invoice.lower().find(ba_supplier.lower()) >= 0 and invoice.split()[-1].split('.')[0][2:4]) or (invoice.lower().find(ba_supplier.lower()) >= 0 and invoice.split()[-2][2:4]) == third_month:
+            elif ((invoice.lower().find(ba_supplier.lower()) >= 0 and invoice.split()[-1].split('.')[0][2:4]) == third_month) or ((invoice.lower().find(ba_supplier.lower()) >= 0 and invoice.split()[-2][2:4]) == third_month):
                 shutil.move(path + "/" + invoice, os.path.expanduser(f"{path}{the_month[int(third_month)-1]} {current_year}/{account_folders[1]}/")+invoice)
 
     # paid by home loan account
         for hl_supplier in hl_suppliers:
-            if (invoice.lower().find(hl_supplier.lower()) >= 0 and invoice.split()[-1].split('.')[0][2:4]) or (invoice.lower().find(hl_supplier.lower()) >= 0 and invoice.split()[-2][2:4]) == first_month:
+            if ((invoice.lower().find(hl_supplier.lower()) >= 0 and invoice.split()[-1].split('.')[0][2:4]) == first_month) or ((invoice.lower().find(hl_supplier.lower()) >= 0 and invoice.split()[-2][2:4]) == first_month):
                 shutil.move(path+"/"+invoice, os.path.expanduser(f"{path}{the_month[int(first_month)-1]} {current_year}/{account_folders[2]}/")+invoice)
-            elif (invoice.lower().find(hl_supplier.lower()) >= 0 and invoice.split()[-1].split('.')[0][2:4]) or (invoice.lower().find(hl_supplier.lower()) >= 0 and invoice.split()[-2][2:4]) == second_month:
+            elif ((invoice.lower().find(hl_supplier.lower()) >= 0 and invoice.split()[-1].split('.')[0][2:4]) == second_month) or ((invoice.lower().find(hl_supplier.lower()) >= 0 and invoice.split()[-2][2:4]) == second_month):
                 shutil.move(path+"/"+invoice, os.path.expanduser(f"{path}{the_month[int(second_month)-1]} {current_year}/{account_folders[2]}/")+invoice)
-            elif (invoice.lower().find(hl_supplier.lower()) >= 0 and invoice.split()[-1].split('.')[0][2:4]) or (invoice.lower().find(hl_supplier.lower()) >= 0 and invoice.split()[-2][2:4]) == third_month:
+            elif ((invoice.lower().find(hl_supplier.lower()) >= 0 and invoice.split()[-1].split('.')[0][2:4]) == third_month) or ((invoice.lower().find(hl_supplier.lower()) >= 0 and invoice.split()[-2][2:4]) == third_month):
                 shutil.move(path + "/" + invoice, os.path.expanduser(f"{path}{the_month[int(third_month)-1]} {current_year}/{account_folders[2]}/")+invoice)
 
     print('Files moved to the folders.')
